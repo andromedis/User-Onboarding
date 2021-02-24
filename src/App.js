@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import Form from './components/Form';
+import User from './components/User';
 import './App.css';
 
 function App() {
@@ -22,13 +23,10 @@ function App() {
   return (
     <div className="App">
       <Form postUser={postUser}/>
-      <h3>Saved Users</h3>
+      <h2>Saved Users</h2>
       {
         users.map(user => {
-          return <div>
-            <p>{user.name}</p>
-            <p>{user.email}</p>
-          </div>
+          return <User user={user} />
         })
       }
     </div>

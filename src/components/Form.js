@@ -60,7 +60,7 @@ function Form(props) {
 
   return (
     <form onSubmit={onSubmit}>
-      <h3>Add User</h3>
+      <h2>Add User</h2>
       <label>Name
         <input
           name='name'
