@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import userEvent from '@testing-library/user-event';
+import React, { useState, useEffect } from 'react';
 import * as yup from 'yup';
 import formSchema from '../validation/formSchema';
 
@@ -16,11 +17,13 @@ const initialFormErrors = {
   terms: '',
 }
 
+const initialSubmitDisabled = true;
 
 function Form(props) {
   const { postUser } = props;
   const [values, setValues] = useState(initialFormValues);
   const [errors, setErrors] = useState(initialFormErrors);
+  const [disabled, setDisabled] = useState(initialSubmitDisabled);
 
   const onSubmit = evt => {
     evt.preventDefault();
@@ -31,6 +34,7 @@ function Form(props) {
       terms: values.terms,
     }
     postUser(newUser);
+    setValues(initialFormValues);
   }
 
   const onChange = evt => {
@@ -47,8 +51,16 @@ function Form(props) {
     setValues({...values, [name]: valueToUse});
   }
 
+  useEffect(() => {
+    formSchema.isValid(values)
+      .then(valid => {
+        setDisabled(!valid)
+      })
+  }, [values])
+
   return (
     <form onSubmit={onSubmit}>
+      <h3>Add User</h3>
       <label>Name
         <input
           name='name'
@@ -56,6 +68,7 @@ function Form(props) {
           value={values.name}
           onChange={onChange}
         />
+        <div>{errors.name}</div>
       </label>
 
       <label>Email
@@ -65,6 +78,7 @@ function Form(props) {
           value={values.email}
           onChange={onChange}
         />
+        <div>{errors.email}</div>
       </label>
 
       <label>Password
@@ -74,6 +88,7 @@ function Form(props) {
           value={values.password}
           onChange={onChange}
         />
+        <div>{errors.password}</div>
       </label>
 
       <label>Accept Terms of Service
@@ -83,9 +98,11 @@ function Form(props) {
           onChange={onChange}
           checked={values.terms}
         />
+        <div>{errors.terms}</div>
       </label>
 
-      <button>Submit</button>
+      <button disabled={disabled}>Submit</button>
+
     </form>
   );
 }
